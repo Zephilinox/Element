@@ -24,7 +24,9 @@ jobs:
           cd build
           cmake -DBUILD_TESTING=ON ..
           cmake --build .
+          set +e
           make test
+          set -e
       - name: Upload test results
         if: failure()
         uses: actions/upload-artifact@1.0.0
@@ -109,7 +111,9 @@ jobs:
           cd build
           cmake -DBUILD_TESTING=ON -DCODE_COVERAGE=ON ..
           cmake --build . --target libelement_test_coverage
+          set +e
           ./libelement_test_app -r sonarqube -o test-results.xml
+          set -e
           cd ../..
 
           # ----- Laboratory Tests Coverage ------

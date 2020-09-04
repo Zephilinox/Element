@@ -229,7 +229,7 @@ if (BUILD_TESTING)
     target_link_libraries(libelement_test_app PUBLIC coverage_config)
 
     add_test(NAME libelement_test
-            COMMAND libelement_test_app -r junit -o ${CMAKE_BINARY_DIR}/libemelement_test_app_details.xml)
+            COMMAND libelement_test_app -r sonarqube -o ${CMAKE_BINARY_DIR}/libemelement_test_app_details.xml)
 
     set_target_properties(libelement_test_app PROPERTIES
         VS_DEBUGGER_WORKING_DIRECTORY       "${debug_dir}")

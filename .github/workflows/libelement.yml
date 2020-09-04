@@ -24,9 +24,7 @@ jobs:
           cd build
           cmake -DBUILD_TESTING=ON ..
           cmake --build .
-          set +e
           make test
-          set -e
       - name: Upload test results
         if: failure()
         uses: actions/upload-artifact@1.0.0
@@ -150,8 +148,9 @@ jobs:
             -Dsonar.projectKey=libelement \
             -Dsonar.sources=libelement,libelement.CLI \
             -Dsonar.projectName="libelement" \
-            -Dsonar.coverageReportPaths="coverage.xml" \
+            -Dsonar.test.inclusions=**/*.test.cpp \
             -Dsonar.testExecutionReportPaths="libelement/build/test-results.xml" \
+            -Dsonar.coverageReportPaths="coverage.xml" \
             -Dsonar.projectBaseDir="." \
             -Dsonar.exclusions=**/dependencies/**/*,**/_deps/**/*,**/build/**/* \
             -Dsonar.coverage.exclusions=**/dependencies/**/*,**/_deps/**/*,**/build/**/*

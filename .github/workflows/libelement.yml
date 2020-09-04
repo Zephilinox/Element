@@ -148,7 +148,7 @@ jobs:
             -Dsonar.projectKey=libelement \
             -Dsonar.sources=libelement,libelement.CLI \
             -Dsonar.projectName="libelement" \
-            -Dsonar.test.inclusions=libelement/test/*.test.cpp \
+            -Dsonar.tests=libelement/test \
             -Dsonar.testExecutionReportPaths="libelement/build/test-results.xml" \
             -Dsonar.coverageReportPaths="coverage.xml" \
             -Dsonar.projectBaseDir="." \

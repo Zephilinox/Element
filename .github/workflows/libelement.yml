@@ -82,6 +82,9 @@ jobs:
           pip install gcovr
           python -m gcovr -v
 
+          # install cppcheck
+          sudo apt-get install cppcheck
+
           #download sonarqube code scanner
           mkdir codescanner
           cd codescanner

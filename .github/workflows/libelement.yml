@@ -110,7 +110,7 @@ jobs:
           cd libelement
           mkdir build
           cd build
-          cmake -DBUILD_TESTING=ON -DCODE_COVERAGE=ON -D-DCODE_ANALYSIS=ON ..
+          cmake -DBUILD_TESTING=ON -DCODE_COVERAGE=ON -DCODE_ANALYSIS=ON ..
           cmake --build . --target libelement_test_coverage
           set +e
           ./libelement_test_app -r sonarqube -o test-results.xml

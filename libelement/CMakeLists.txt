@@ -270,6 +270,14 @@ if (BUILD_TESTING)
     endif()
 endif ()
 
+if(CODE_ANALYSIS)
+    set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+    set(CPPCHECK_XML_OUTPUT "${CMAKE_BINARY_DIR}/cppcheck_analysis.xml")
+    set(CPPCHECK_EXCLUDES
+            ${CMAKE_BINARY_DIR}/*)
+    find_package(Cppcheck)
+endif()
+
 target_compile_definitions(libelement
     PRIVATE
         ${LEGACY_COMPILER}

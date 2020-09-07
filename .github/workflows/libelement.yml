@@ -153,4 +153,5 @@ jobs:
             -Dsonar.coverageReportPaths="coverage.xml" \
             -Dsonar.projectBaseDir="." \
             -Dsonar.exclusions=**/dependencies/**/*,**/_deps/**/*,**/build/**/*,**/test/* \
-            -Dsonar.coverage.exclusions=**/dependencies/**/*,**/_deps/**/*,**/build/**/*
+            -Dsonar.coverage.exclusions=**/dependencies/**/*,**/_deps/**/*,**/build/**/* \
+            -Dsonar.cppcheck.reportPath="libelement/build/cppcheck_analysis.xml"

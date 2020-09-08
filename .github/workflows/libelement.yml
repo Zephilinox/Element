@@ -84,6 +84,7 @@ jobs:
 
           # install cppcheck
           sudo apt-get install cppcheck
+          sudo apt-get install clang-tidy
 
           #download sonarqube code scanner
           mkdir codescanner
@@ -117,6 +118,7 @@ jobs:
 
           # ---- libelement Static Analysis ----
           cmake --build . --target cppcheck-analysis
+          cmake --build . --target clang-tidy
           set -e
           cd ../..
 
@@ -160,4 +162,5 @@ jobs:
             -Dsonar.projectBaseDir="." \
             -Dsonar.exclusions=**/dependencies/**/*,**/_deps/**/*,**/build/**/*,**/test/* \
             -Dsonar.coverage.exclusions=**/dependencies/**/*,**/_deps/**/*,**/build/**/* \
-            -Dsonar.cppcheck.reportPath="libelement/build/cppcheck_analysis.xml"
+            -Dsonar.cppcheck.reportPath="libelement/build/cppcheck_analysis.xml" \
+            -Dsonar.cxx.clangtidy.reportPath=libelement/build/clang-tidy-report.txt"

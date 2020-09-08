@@ -276,6 +276,12 @@ if(CODE_ANALYSIS)
     set(CPPCHECK_EXCLUDES
             ${CMAKE_BINARY_DIR}/*)
     find_package(Cppcheck)
+
+    find_program(CLANG_TIDY clang-tidy)
+    add_custom_target(clang-tidy
+            COMMAND ${CLANG_TIDY} -checks="*" -header-filter="^include" -p . ${CMAKE_SOURCE_DIR}/src/*.cpp > clang-tidy-report.txt
+            COMMENT "Running clang-tidy static analysis"
+            )
 endif()
 
 target_compile_definitions(libelement

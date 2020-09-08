@@ -163,4 +163,4 @@ jobs:
             -Dsonar.exclusions=**/dependencies/**/*,**/_deps/**/*,**/build/**/*,**/test/* \
             -Dsonar.coverage.exclusions=**/dependencies/**/*,**/_deps/**/*,**/build/**/* \
             -Dsonar.cppcheck.reportPath="libelement/build/cppcheck_analysis.xml" \
-            -Dsonar.cxx.clangtidy.reportPath=libelement/build/clang-tidy-report.txt"
+            -Dsonar.cxx.clangtidy.reportPath="libelement/build/clang-tidy-report.txt"

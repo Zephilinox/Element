@@ -17,7 +17,7 @@ anonymous_block_instance::anonymous_block_instance(const anonymous_block_express
     : declarer(declarer)
     , captures(std::move(captures))
 {
-    this->source_info = std::move(source_info);
+    this->identity.source_info = std::move(source_info);
 }
 
 bool anonymous_block_instance::matches_constraint(const compilation_context& context, const constraint* constraint) const

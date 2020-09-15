@@ -9,6 +9,7 @@ bool user_function_constraint::matches_constraint(const compilation_context& con
 {
     const auto check_match = [&context](const port& our_input, const port& their_input)
     {
+        //TODO: Drop declaration, use identity and add check functions to identity
         const declaration* our_input_type = nullptr;
         const declaration* their_input_type = nullptr;
         const constraint* our_input_constraint = nullptr;
@@ -44,24 +45,24 @@ bool user_function_constraint::matches_constraint(const compilation_context& con
     if (!other)
         return false;
 
-    for (unsigned i = 0; i < declarer->inputs.size(); ++i)
+    for (unsigned i = 0; i < declarer->identity.inputs.size(); ++i)
     {
-        const auto& our_input = declarer->inputs[i];
-        const auto& their_input = other->inputs[i];
+        const auto& our_input = declarer->identity.inputs[i];
+        const auto& their_input = other->identity.inputs[i];
 
         if (!check_match(our_input, their_input))
             return false;
     }
 
     //no one has a return constraint
-    if (!declarer->output && !other->output)
+    if (!declarer->identity.output && !other->identity.output)
         return true;
 
     //check return types match since at least one of them has one
-    if (declarer->output && other->output)
+    if (declarer->identity.output && other->identity.output)
     {
         //todo: nullptr checks?
-        if (!check_match(declarer->output.value(), other->output.value()))
+        if (!check_match(declarer->identity.output.value(), other->identity.output.value()))
             return false;
     }
 

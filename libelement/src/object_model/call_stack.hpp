@@ -13,6 +13,7 @@ namespace element
     public:
         struct frame
         {
+            //TODO: attempt to remove this later
             const declaration* function;
             std::vector<object_const_shared_ptr> compiled_arguments;
         };

@@ -18,7 +18,7 @@ namespace element
         const auto& file_info = context->src_context->file_info.at(ast->nearest_token->file_name);
         const std::string* filename = file_info.file_name.get();
         const std::string* line_in_source = file_info.source_lines[ast->nearest_token->line - 1].get();
-        t->source_info = source_information(
+        t.source_info = source_information(
             ast->nearest_token->line,
             ast->nearest_token->character,
             ast->nearest_token->character + ast->nearest_token->tok_len,

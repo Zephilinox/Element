@@ -56,16 +56,16 @@ const constraint* function_declaration::get_constraint() const
 
 bool function_declaration::valid_at_boundary(const compilation_context& context) const
 {
-    if (!output)
+    if (!identity.output)
         return false;
 
     //outputs must be serializable
-    const auto* return_type = output->resolve_annotation(context);
+    const auto* return_type = identity.output->resolve_annotation(context);
     if (!return_type || !return_type->serializable(context))
         return false;
 
     //inputs must be deserializable
-    for (const auto& input : inputs)
+    for (const auto& input : identity.inputs)
     {
         const auto& type = input.resolve_annotation(context);
         if (!type || !type->deserializable(context))

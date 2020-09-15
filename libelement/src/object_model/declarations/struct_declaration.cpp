@@ -90,7 +90,7 @@ bool struct_declaration::deserializable(const compilation_context& context) cons
 {
     //todo: cache deserializabilit
 
-    if (inputs.empty())
+    if (identity.inputs.empty())
     {
         assert(is_intrinsic());
         const auto* intrinsic = intrinsic::get_intrinsic(context.interpreter, *this);
@@ -116,7 +116,7 @@ bool struct_declaration::deserializable(const compilation_context& context) cons
 
 object_const_shared_ptr struct_declaration::generate_placeholder(const compilation_context& context, int& placeholder_index) const
 {
-    if (inputs.empty())
+    if (identity.inputs.empty())
     {
         assert(is_intrinsic());
         const auto* intrinsic = intrinsic::get_intrinsic(context.interpreter, *this);

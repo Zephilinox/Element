@@ -20,15 +20,15 @@ namespace element
     public:
         explicit declaration(identifier name, const scope* parent);
 
-        [[nodiscard]] bool has_inputs() const { return !inputs.empty(); };
-        [[nodiscard]] bool has_output() const { return output.has_value(); };
+        [[nodiscard]] bool has_inputs() const { return !identity.inputs.empty(); };
+        [[nodiscard]] bool has_output() const { return identity.output.has_value(); };
         [[nodiscard]] bool has_constraint() const { return false; }; //TODO: JM - nonsense, this needs to be a constraint::something OR constraint::any
         [[nodiscard]] bool has_scope() const;
         [[nodiscard]] bool virtual is_intrinsic() const = 0;
         [[nodiscard]] virtual bool is_variadic() const { return false; };
-        [[nodiscard]] const std::vector<port>& get_inputs() const override { return inputs; }
+        [[nodiscard]] const std::vector<port>& get_inputs() const override { return identity.inputs; }
         [[nodiscard]] const scope* get_scope() const override { return our_scope.get(); };
-        [[nodiscard]] const std::optional<port>& get_output() const override { return output; };
+        [[nodiscard]] const std::optional<port>& get_output() const override { return identity.output; };
 
         [[nodiscard]] virtual bool serializable(const compilation_context& context) const { return false; };
         [[nodiscard]] virtual bool deserializable(const compilation_context& context) const { return false; };
@@ -42,9 +42,7 @@ namespace element
 
         std::string qualifier;
         const identifier name;
-        std::vector<port> inputs;
         std::unique_ptr<scope> our_scope;
-        std::optional<port> output;
 
     protected:
         //the wrapper is used to return declarations within the object model

@@ -53,7 +53,7 @@ namespace element
             //todo: make expression chain, it's not an identifier
 
             auto element = std::make_unique<type_annotation>(identifier(ident->identifier));
-            assign_source_information(context, element, ast);
+            assign_source_information(context, *element, ast);
             return element;
         }
 
@@ -64,7 +64,7 @@ namespace element
     void build_output(const element_interpreter_ctx* context, element_ast* output, declaration& declaration, element_result& output_result)
     {
         auto type_annotation = build_type_annotation(context, output, output_result);
-        declaration.output.emplace(port{&declaration, identifier::return_identifier, std::move(type_annotation) });
+        declaration.identity.output.emplace(port{&declaration, identifier::return_identifier, std::move(type_annotation) });
     }
 
     void build_inputs(const element_interpreter_ctx* context, element_ast* inputs, declaration& declaration, element_result& output_result)
@@ -84,13 +84,13 @@ namespace element
             if (!has_type_annotation)
             {
                 //todo: instead of nullptr, use an object to represent nothing? can't use Any, as user might not have it in source
-                declaration.inputs.emplace_back(&declaration, ident, nullptr);
+                declaration.identity.inputs.emplace_back(&declaration, ident, nullptr);
                 continue;
             }
 
             auto* const output = input->children[ast_idx::port::type].get();
             auto type_annotation = build_type_annotation(context, output, output_result);
-            declaration.inputs.emplace_back(&declaration, ident, std::move(type_annotation));
+            declaration.identity.inputs.emplace_back(&declaration, ident, std::move(type_annotation));
         }
     }
 
@@ -170,7 +170,7 @@ namespace element
 
         //TODO: This needs to be a new type e.g. lambda_declaration, at the very least for to_code to function correctly (might require some string magic to resugar/sugarify/???) and be able to distinguish between lambda vs not
         auto lambda_function_decl = std::make_unique<function_declaration>(identifier, parent_scope, get_function_kind(lambda_body, false));
-        assign_source_information(context, lambda_function_decl, expression);
+        assign_source_information(context, lambda_function_decl->identity, expression);
 
         build_inputs_output(context, expression, *lambda_function_decl, output_result, ELEMENT_AST_NODE_LAMBDA);
 
@@ -212,7 +212,7 @@ namespace element
                 }
 
                 auto lambda_return_decl = std::make_unique<function_declaration>(identifier::return_identifier, lambda_function_decl->our_scope.get(), function_declaration::kind::expression_bodied);
-                assign_source_information(context, lambda_return_decl, expression);
+                assign_source_information(context, lambda_return_decl->identity, expression);
                 lambda_return_decl->body = std::move(chain);
 
                 lambda_function_decl->body = std::move(lambda_return_decl);
@@ -230,7 +230,7 @@ namespace element
         auto intrinsic = decl->has_flag(ELEMENT_AST_FLAG_DECL_INTRINSIC);
 
         auto function_decl = std::make_unique<function_declaration>(identifier(decl->identifier), parent_scope, get_function_kind(body, intrinsic));
-        assign_source_information(context, function_decl, decl);
+        assign_source_information(context, function_decl->identity, decl);
 
         build_inputs_output(context, decl, *function_decl, output_result, ELEMENT_AST_NODE_FUNCTION);
 
@@ -288,7 +288,7 @@ namespace element
                 }
 
                 auto lambda_return_decl = std::make_unique<function_declaration>(identifier::return_identifier, function_decl->our_scope.get(), function_declaration::kind::expression_bodied);
-                assign_source_information(context, lambda_return_decl, decl);
+                assign_source_information(context, lambda_return_decl->identity, decl);
                 lambda_return_decl->body = std::move(chain);
 
                 function_decl->body = std::move(lambda_return_decl);
@@ -311,7 +311,7 @@ namespace element
     std::unique_ptr<declaration> build_namespace_declaration(const element_interpreter_ctx* context, const element_ast* const ast, const scope* const parent_scope, element_result& output_result)
     {
         auto namespace_decl = std::make_unique<namespace_declaration>(identifier(ast->identifier), parent_scope);
-        assign_source_information(context, namespace_decl, ast);
+        assign_source_information(context, namespace_decl->identity, ast);
 
         if (ast->children.size() > ast_idx::ns::body)
         {
@@ -354,7 +354,7 @@ namespace element
         }
 
         auto expression = std::make_unique<literal_expression>(ast->literal, chain);
-        assign_source_information(context, expression, ast);
+        assign_source_information(context, *expression, ast);
         return std::move(expression);
     }
 
@@ -362,7 +362,7 @@ namespace element
     {
         //no need to test for !chain->expressions.empty() since build_indexing_expression code path will always be taken in this case
         auto expression = std::make_unique<identifier_expression>(ast->identifier, chain);
-        assign_source_information(context, expression, ast);
+        assign_source_information(context, *expression, ast);
         return std::move(expression);
     }
 
@@ -370,7 +370,7 @@ namespace element
     {
         //no need to test for chain->expressions.empty() since build_identifier_expression code path will always be taken in this case
         auto expression = std::make_unique<indexing_expression>(ast->identifier, chain);
-        assign_source_information(context, expression, ast);
+        assign_source_information(context, *expression, ast);
         return std::move(expression);
     }
 
@@ -389,18 +389,18 @@ namespace element
             return nullptr;
         }
 
-        auto call_expr = std::make_unique<call_expression>(chain);
-        assign_source_information(context, call_expr, ast);
+        auto expression = std::make_unique<call_expression>(chain);
+        assign_source_information(context, *expression, ast);
 
         //every child of the current AST node (EXPRLIST) is the start of another expression_chain, comma separated
         for (const auto& child : ast->children)
         {
             //oof, call expressions... you have to be awkward, don't you?
             auto nested_chain = build_expression_chain(context, child.get(), chain->declarer, deferred_expressions, output_result);
-            call_expr->arguments.push_back(std::move(nested_chain));
+            expression->arguments.push_back(std::move(nested_chain));
         }
 
-        return std::move(call_expr);
+        return std::move(expression);
     }
 
     std::unique_ptr<expression> build_anonymous_block_expression(const element_interpreter_ctx* context, const element_ast* const ast, expression_chain* chain, element_result& output_result)
@@ -425,7 +425,7 @@ namespace element
     std::unique_ptr<expression_chain> build_expression_chain(const element_interpreter_ctx* context, const element_ast* const ast, const declaration* declarer, deferred_expressions& deferred_expressions, element_result& output_result)
     {
         auto chain = std::make_unique<expression_chain>(declarer);
-        assign_source_information(context, chain, ast);
+        assign_source_information(context, chain->identity, ast);
 
         //clean me up, Scotty!
 
@@ -435,7 +435,7 @@ namespace element
             const auto identifier_string = fmt::format("<{}_{}>", declarer->name.value, deferred_expressions.size());
             auto identifier = element::identifier(identifier_string);
             auto expression = std::make_unique<identifier_expression>(identifier, chain.get());
-            assign_source_information(context, expression, ast);
+            assign_source_information(context, *expression, ast);
             chain->expressions.push_back(std::move(expression));
             deferred_expressions.push_back({ identifier, ast });
             return std::move(chain);
@@ -541,7 +541,7 @@ namespace element
         }
 
         auto root = std::make_unique<scope>(nullptr, nullptr);
-        assign_source_information(context, root, ast);
+        assign_source_information(context, root->identity, ast);
 
         build_scope(context, ast, root.get(), output_result);
 

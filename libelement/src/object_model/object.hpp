@@ -14,6 +14,13 @@
 
 namespace element
 {
+    struct identity {
+
+        std::vector<port> inputs;
+        std::optional<port> output;
+        source_information source_info;
+    };
+
     class object
     {
     public:
@@ -47,7 +54,8 @@ namespace element
         
         [[nodiscard]] virtual std::shared_ptr<const element_expression> to_expression() const { return nullptr; };
 
-        source_information source_info;
+
+        identity identity;
 
     protected:
         object() = default;

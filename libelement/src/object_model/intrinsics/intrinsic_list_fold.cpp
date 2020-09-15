@@ -57,7 +57,7 @@ object_const_shared_ptr runtime_fold(const compilation_context& context,
 {
     const auto accumulator_is_boundary = accumulator_function->valid_at_boundary(context);
     if (!accumulator_is_boundary)
-        return std::make_shared<const error>("accumulator is not a boundary function", ELEMENT_ERROR_UNKNOWN, accumulator_function->source_info);
+        return std::make_shared<const error>("accumulator is not a boundary function", ELEMENT_ERROR_UNKNOWN, accumulator_function->identity.source_info);
 
     element_result result;
     const auto placeholder_offset = 0;
@@ -67,7 +67,7 @@ object_const_shared_ptr runtime_fold(const compilation_context& context,
 
     const auto accumulator_expression = accumulator_compiled->to_expression();
     if (!accumulator_expression)
-        return std::make_shared<const error>("accumulator failed to compile to an expression tree", ELEMENT_ERROR_UNKNOWN, accumulator_function->source_info);
+        return std::make_shared<const error>("accumulator failed to compile to an expression tree", ELEMENT_ERROR_UNKNOWN, accumulator_function->identity.source_info);
 
     //make it work
 
@@ -79,7 +79,7 @@ object_const_shared_ptr intrinsic_list_fold::compile(const compilation_context& 
 {
     const auto& frame = context.calls.frames.back();
     const auto& declarer = *frame.function;
-    assert(declarer.inputs.size() == 3);
+    assert(declarer.identity.inputs.size() == 3);
 
     assert(frame.compiled_arguments.size() == 3);
 
@@ -87,11 +87,11 @@ object_const_shared_ptr intrinsic_list_fold::compile(const compilation_context& 
     const auto& initial = frame.compiled_arguments[1];
     const auto& accumulator = frame.compiled_arguments[2];
 
-    auto list_struct = std::dynamic_pointer_cast<const struct_instance>(list);
+    const auto list_struct = std::dynamic_pointer_cast<const struct_instance>(list);
     if (!list_struct)
         return nullptr;
 
-    auto accumulator_instance = std::dynamic_pointer_cast<const function_instance>(accumulator);
+    const auto accumulator_instance = std::dynamic_pointer_cast<const function_instance>(accumulator);
     if (!accumulator_instance)
         return nullptr;
 

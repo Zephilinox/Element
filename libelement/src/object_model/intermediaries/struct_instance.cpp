@@ -29,10 +29,10 @@ struct_instance::struct_instance(const struct_declaration* declarer, const std::
     : declarer(declarer)
 {
     //TODO: JM - variadics
-    assert(declarer->inputs.size() == expressions.size());
-    for (size_t i = 0; i < declarer->inputs.size(); ++i)
+    assert(declarer->identity.inputs.size() == expressions.size());
+    for (size_t i = 0; i < declarer->identity.inputs.size(); ++i)
     {
-        fields.emplace(declarer->inputs[i].get_name(), expressions[i]);
+        fields.emplace(declarer->identity.inputs[i].get_name(), expressions[i]);
     }
 }
 
@@ -58,7 +58,7 @@ std::shared_ptr<const element_expression> struct_instance::to_expression() const
 {
     //todo: I don't think the expression needs names for the dependents, it's just index based
     std::vector<std::pair<std::string, expression_const_shared_ptr>> dependents;
-    for (const auto& input : declarer->inputs)
+    for (const auto& input : declarer->identity.inputs)
     {
         assert(fields.count(input.get_name()));
         const auto field = fields.at(input.get_name());

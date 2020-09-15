@@ -84,11 +84,11 @@ object_const_shared_ptr runtime_for(const object_const_shared_ptr& initial_objec
     //ensure that these are boundary functions as we'll need to compile them like any other boundary function
     const auto predicate_is_boundary = predicate_function->valid_at_boundary(context);
     if (!predicate_is_boundary)
-        return std::make_shared<const error>("predicate is not a boundary function", ELEMENT_ERROR_UNKNOWN, predicate_function->source_info);
+        return std::make_shared<const error>("predicate is not a boundary function", ELEMENT_ERROR_UNKNOWN, predicate_function->identity.source_info);
 
     const auto body_is_boundary = body_function->valid_at_boundary(context);
     if (!body_is_boundary)
-        return std::make_shared<const error>("body is not a boundary function", ELEMENT_ERROR_UNKNOWN, body_function->source_info);
+        return std::make_shared<const error>("body is not a boundary function", ELEMENT_ERROR_UNKNOWN, body_function->identity.source_info);
 
     //compile our functions to instruction trees, with their own placeholder input instructions
     const auto placeholder_offset = 0;
@@ -102,11 +102,11 @@ object_const_shared_ptr runtime_for(const object_const_shared_ptr& initial_objec
 
     auto predicate_expression = predicate_compiled->to_expression();
     if (!predicate_expression)
-        return std::make_shared<const error>("predicate failed to compile to an expression tree", ELEMENT_ERROR_UNKNOWN, predicate_function->source_info);
+        return std::make_shared<const error>("predicate failed to compile to an expression tree", ELEMENT_ERROR_UNKNOWN, predicate_function->identity.source_info);
 
     auto body_expression = body_compiled->to_expression();
     if (!body_expression)
-        return std::make_shared<const error>("body failed to compile to an expression tree", ELEMENT_ERROR_UNKNOWN, body_function->source_info);
+        return std::make_shared<const error>("body failed to compile to an expression tree", ELEMENT_ERROR_UNKNOWN, body_function->identity.source_info);
 
     //everything is an instruction, so make a for instruction. note: initial_object is either Num or Bool.
     auto initial_expression = std::dynamic_pointer_cast<const element_expression>(initial_object);
@@ -143,7 +143,7 @@ object_const_shared_ptr intrinsic_for::compile(const compilation_context& contex
 {
     const auto& frame = context.calls.frames.back();
     const auto& declarer = *frame.function;
-    assert(declarer.inputs.size() == 3);
+    assert(declarer.identity.inputs.size() == 3);
     assert(frame.compiled_arguments.size() == 3);
 
     const auto initial = frame.compiled_arguments[0];

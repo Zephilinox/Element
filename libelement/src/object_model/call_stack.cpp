@@ -40,28 +40,28 @@ std::shared_ptr<error> call_stack::build_recursive_error(
 
     for (auto it = context.calls.frames.rbegin(); it < context.calls.frames.rend(); ++it)
     {
-        auto& func = it->function;
+        auto& identity = it->function;
 
         std::string params;
-        for (unsigned i = 0; i < func->inputs.size(); ++i)
+        for (unsigned i = 0; i < identity->identity.inputs.size(); ++i)
         {
-            const auto& input = func->inputs[i];
+            const auto& input = identity->identity.inputs[i];
             params += fmt::format("{}{} = {}",
                 input.get_name(),
                 input.has_annotation() ? ":" + input.get_annotation()->to_string() : "",
                 it->compiled_arguments[i]->typeof_info());
 
-            if (i != func->inputs.size() - 1)
+            if (i != identity->identity.inputs.size() - 1)
                 params += ", ";
         }
 
         trace += fmt::format("{}:{} at {}({})",
-            func->source_info.filename,
-            func->source_info.line,
-            func->typeof_info(),
+            identity->identity.source_info.filename,
+            identity->identity.source_info.line,
+            identity->typeof_info(),
             params);
 
-        if (func == decl)
+        if (identity == decl)
             trace += " <-- here";
 
         if (it != context.calls.frames.rend() - 1)

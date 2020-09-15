@@ -47,13 +47,13 @@ namespace element
     bool valid_call(const compilation_context& context, const declaration* declarer, const std::vector<object_const_shared_ptr>&
                     compiled_args)
     {
-        if (compiled_args.size() != declarer->inputs.size())
+        if (compiled_args.size() != declarer->identity.inputs.size())
             return false;
 
         for (unsigned int i = 0; i < compiled_args.size(); ++i)
         {
             const auto& arg = compiled_args[i];
-            const auto& input = declarer->inputs[i];
+            const auto& input = declarer->identity.inputs[i];
 
             //no annotation always matches
             if (!input.has_annotation())
@@ -77,14 +77,14 @@ namespace element
     {
         assert(!valid_call(context, declarer, compiled_args));
 
-        if (compiled_args.size() != declarer->inputs.size())
+        if (compiled_args.size() != declarer->identity.inputs.size())
         {
             std::string input_params;
-            for (unsigned i = 0; i < declarer->inputs.size(); ++i)
+            for (unsigned i = 0; i < declarer->identity.inputs.size(); ++i)
             {
-                const auto& input = declarer->inputs[i];
+                const auto& input = declarer->identity.inputs[i];
                 input_params += fmt::format("({}) {}{}", i, input.get_name(), input.has_annotation() ? ":" + input.get_annotation()->to_string() : "");
-                if (i != declarer->inputs.size() - 1)
+                if (i != declarer->identity.inputs.size() - 1)
                     input_params += ", ";
             }
 
@@ -97,12 +97,12 @@ namespace element
                     given_params += ", ";
             }
 
-            return build_error(declarer->source_info, error_message_code::argument_count_mismatch,
+            return build_error(declarer->identity.source_info, error_message_code::argument_count_mismatch,
                 declarer->location(), input_params, given_params);
         }
 
         //todo: proper logging
-        return std::make_shared<error>("constraint not satisfied", ELEMENT_ERROR_CONSTRAINT_NOT_SATISFIED, declarer->source_info);
+        return std::make_shared<error>("constraint not satisfied", ELEMENT_ERROR_CONSTRAINT_NOT_SATISFIED, declarer->identity.source_info);
     }
 
     object_const_shared_ptr index_type(const declaration* type,
@@ -115,8 +115,8 @@ namespace element
 
         //todo: not exactly working type checking, good enough for now though
         const bool has_inputs = func && func->has_inputs();
-        const bool has_type = has_inputs && func->inputs[0].get_annotation();
-        const bool types_match = has_type && func->inputs[0].get_annotation()->to_string() == type->name.value;
+        const bool has_type = has_inputs && func->identity.inputs[0].get_annotation();
+        const bool types_match = has_type && func->identity.inputs[0].get_annotation()->to_string() == type->name.value;
 
         //call as instance function, filling in first argument
         if (types_match)
@@ -132,12 +132,12 @@ namespace element
 
         if (!has_type)
             return build_error_and_log(context, source_info, error_message_code::is_not_an_instance_function,
-                func->typeof_info(), instance->typeof_info(), func->inputs[0].get_name());
+                func->typeof_info(), instance->typeof_info(), func->identity.inputs[0].get_name());
 
         if (!types_match)
             return build_error_and_log(context, source_info, error_message_code::is_not_an_instance_function,
                 func->typeof_info(), instance->typeof_info(),
-                func->inputs[0].get_name(), func->inputs[0].get_annotation()->to_string(), type->name.value);
+                func->identity.inputs[0].get_name(), func->identity.inputs[0].get_annotation()->to_string(), type->name.value);
 
         //did we miss an error that we need to handle?
         assert(false);

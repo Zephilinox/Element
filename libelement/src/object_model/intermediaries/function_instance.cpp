@@ -17,7 +17,7 @@ function_instance::function_instance(const function_declaration* declarer, captu
     : declarer(declarer)
     , captures(std::move(captures))
 {
-    this->source_info = std::move(source_info);
+    this->identity.source_info = std::move(source_info);
 }
 
 function_instance::function_instance(const function_declaration* declarer, capture_stack captures, source_information source_info, std::vector<object_const_shared_ptr> args)
@@ -25,7 +25,7 @@ function_instance::function_instance(const function_declaration* declarer, captu
     , captures(std::move(captures))
     , provided_arguments(std::move(args))
 {
-    this->source_info = std::move(source_info);
+    this->identity.source_info = std::move(source_info);
 }
 
 bool function_instance::matches_constraint(const compilation_context& context, const constraint* constraint) const
@@ -49,14 +49,14 @@ object_const_shared_ptr function_instance::call(
 
     //element doesn't allow partial application generally
     //todo: more helpful information than the number of arguments expected
-    if (compiled_args.size() < declarer->inputs.size())
+    if (compiled_args.size() < declarer->identity.inputs.size())
         return build_error_and_log(context, source_info, error_message_code::not_enough_arguments,
-            declarer->name.value, compiled_args.size(), declarer->inputs.size());
+            declarer->name.value, compiled_args.size(), declarer->identity.inputs.size());
 
     //todo: more helpful information than the number of arguments expected
-    if (!is_variadic && compiled_args.size() > declarer->inputs.size())
+    if (!is_variadic && compiled_args.size() > declarer->identity.inputs.size())
         return build_error_and_log(context, source_info, error_message_code::too_many_arguments,
-            declarer->name.value, compiled_args.size(), declarer->inputs.size());
+            declarer->name.value, compiled_args.size(), declarer->identity.inputs.size());
 
     //todo: check this works and is a useful error message (stolen from struct declaration call)
     if (!is_variadic && !valid_call(context, declarer, compiled_args))
@@ -87,8 +87,8 @@ object_const_shared_ptr function_instance::call(
     //todo: nicer?
     const constraint* constraint = nullptr;
     const declaration* type = nullptr;
-    if (declarer->output)
-        type = declarer->output->resolve_annotation(context);
+    if (declarer->identity.output)
+        type = declarer->identity.output->resolve_annotation(context);
 
     if (type)
         constraint = type->get_constraint();
@@ -112,7 +112,7 @@ object_const_shared_ptr function_instance::compile(const compilation_context& co
     if (variadic && !provided_arguments.empty())
         return call(context, {}, source_info);
 
-    if (!variadic && provided_arguments.size() == declarer->inputs.size())
+    if (!variadic && provided_arguments.size() == declarer->identity.inputs.size())
         return call(context, {}, source_info);
 
     return shared_from_this();

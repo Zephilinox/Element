@@ -22,7 +22,7 @@ object_const_shared_ptr intrinsic_unary::compile(const compilation_context& cont
 {
     const auto& frame = context.calls.frames.back();
     const auto& declarer = *frame.function;
-    assert(declarer.inputs.size() == 1);
+    assert(declarer.identity.inputs.size() == 1);
     assert(frame.compiled_arguments.size() == 1);
 
     const auto* intrinsic = get_intrinsic(context.interpreter, declarer);

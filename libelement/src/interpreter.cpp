@@ -581,7 +581,7 @@ element_result element_interpreter_compile_expression(
     element::deferred_expressions deferred_expressions;
     auto dummy_declaration = std::make_unique<element::function_declaration>(element::identifier{ "<REMOVE>" }, context->global_scope.get(), element::function_declaration::kind::expression_bodied);
     parser.root->nearest_token = &tokeniser->tokens[0];
-    element::assign_source_information(context, dummy_declaration, parser.root);
+    element::assign_source_information(context, dummy_declaration->identity, parser.root);
     auto expression_chain = element::build_expression_chain(context, ast, dummy_declaration.get(), deferred_expressions, result);
     dummy_declaration->body = std::move(expression_chain);
     root.children.clear();
@@ -601,7 +601,7 @@ element_result element_interpreter_compile_expression(
 
     const auto* found_dummy_decl = context->global_scope->find(element::identifier{ "<REMOVE>" }, false);
     assert(found_dummy_decl);
-    auto compiled = found_dummy_decl->compile(compilation_context, found_dummy_decl->source_info);
+    auto compiled = found_dummy_decl->compile(compilation_context, found_dummy_decl->identity.source_info);
 
     //stuff from below
     (*object)->obj = std::move(compiled);

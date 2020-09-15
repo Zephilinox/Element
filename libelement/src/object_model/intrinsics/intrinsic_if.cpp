@@ -17,7 +17,7 @@ object_const_shared_ptr intrinsic_if::compile(const compilation_context& context
 {
     const auto& frame = context.calls.frames.back();
     const auto& declarer = *frame.function;
-    assert(declarer.inputs.size() == 3);
+    assert(declarer.identity.inputs.size() == 3);
     assert(frame.compiled_arguments.size() == 3);
 
     //todo: this flips the true/false branch so as not to modify the predicate, and we're not using the if expression, we probably want a different solution for niceties but this will work for now

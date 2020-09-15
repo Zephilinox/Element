@@ -126,7 +126,7 @@ std::string struct_declaration::to_code(const int depth) const
             return std::move(accumulator) + ", " + port.typeof_info() + port.to_code(depth);
         };
 
-        const auto input_ports = std::accumulate(std::next(std::begin(inputs)), std::end(inputs), inputs[0].typeof_info() + inputs[0].to_code(depth), accumulate);
+        const auto input_ports = std::accumulate(std::next(std::begin(identity.inputs)), std::end(identity.inputs), identity.inputs[0].typeof_info() + identity.inputs[0].to_code(depth), accumulate);
         ports = "(" + input_ports + ")";
     }
 
@@ -152,12 +152,12 @@ std::string constraint_declaration::to_code(const int depth) const
             return std::move(accumulator) + ", " + port.typeof_info() + port.to_code(depth);
         };
 
-        const auto input_ports = std::accumulate(std::next(std::begin(inputs)), std::end(inputs), inputs[0].typeof_info() + inputs[0].to_code(depth), accumulate);
+        const auto input_ports = std::accumulate(std::next(std::begin(identity.inputs)), std::end(identity.inputs), identity.inputs[0].typeof_info() + identity.inputs[0].to_code(depth), accumulate);
         ports = "(" + input_ports + ")";
     }
 
     if (has_output())
-        ports += output->to_code(depth);
+        ports += identity.output->to_code(depth);
 
     result += is_intrinsic() ? "intrinsic constraint " : "constraint ";
     result += name.value + ports;
@@ -181,12 +181,12 @@ std::string function_declaration::to_code(int depth) const
             return std::move(accumulator) + ", " + port.typeof_info() + port.to_code(depth);
         };
 
-        const auto input_ports = std::accumulate(std::next(std::begin(inputs)), std::end(inputs), inputs[0].typeof_info() + inputs[0].to_code(depth), accumulate);
+        const auto input_ports = std::accumulate(std::next(std::begin(identity.inputs)), std::end(identity.inputs), identity.inputs[0].typeof_info() + identity.inputs[0].to_code(depth), accumulate);
         ports = "(" + input_ports + ")";
     }
 
     if (has_output())
-        ports += output->to_code(depth);
+        ports += identity.output->to_code(depth);
 
     //intrinsic declaration
     if (is_intrinsic())

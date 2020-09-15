@@ -15,16 +15,16 @@ const std::string& error::get_message() const
 element_log_message error::get_log_message() const
 {
     element_log_message msg;
-    msg.filename = source_info.filename;
-    msg.line = source_info.line;
-    msg.character = source_info.character_start;
+    msg.filename = identity.source_info.filename;
+    msg.line = identity.source_info.line;
+    msg.character = identity.source_info.character_start;
     msg.message = message.c_str();
     msg.message_length = message.length();
-    msg.length = source_info.character_end - source_info.character_start;
+    msg.length = identity.source_info.character_end - identity.source_info.character_start;
     msg.message_code = code;
     msg.related_log_message = nullptr;
     msg.stage = ELEMENT_STAGE_COMPILER;
-    msg.line_in_source = source_info.line_in_source ? source_info.line_in_source->c_str() : nullptr;
+    msg.line_in_source = identity.source_info.line_in_source ? identity.source_info.line_in_source->c_str() : nullptr;
     return msg;
 }
 

@@ -12,7 +12,7 @@ namespace element
             : message{ std::move(message) }
             , code(code)
         {
-            source_info = std::move(src_info);
+            identity.source_info = std::move(src_info);
         }
 
         [[nodiscard]] object_const_shared_ptr index(const compilation_context& context,

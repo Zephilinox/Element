@@ -48,7 +48,7 @@ object_const_shared_ptr struct_declaration::call(
         return build_error_and_log(context, source_info, error_message_code::intrinsic_not_implemented);
     }
 
-    if (valid_call(context, this, compiled_args))
+    if (valid_call(context, &this->identity, compiled_args))
         return std::make_shared<struct_instance>(this, compiled_args);
 
     return build_error_for_invalid_call(context, this, compiled_args);

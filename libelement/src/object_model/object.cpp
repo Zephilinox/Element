@@ -44,16 +44,16 @@ namespace element
         return build_error_and_log(context, source_info, error_message_code::not_compilable, typeof_info());
     }
 
-    bool valid_call(const compilation_context& context, const declaration* declarer, const std::vector<object_const_shared_ptr>&
+    bool valid_call(const compilation_context& context, const identity* identity, const std::vector<object_const_shared_ptr>&
                     compiled_args)
     {
-        if (compiled_args.size() != declarer->identity.inputs.size())
+        if (compiled_args.size() != identity->inputs.size())
             return false;
 
         for (unsigned int i = 0; i < compiled_args.size(); ++i)
         {
             const auto& arg = compiled_args[i];
-            const auto& input = declarer->identity.inputs[i];
+            const auto& input = identity->inputs[i];
 
             //no annotation always matches
             if (!input.has_annotation())
@@ -75,7 +75,7 @@ namespace element
 
     std::shared_ptr<const error> build_error_for_invalid_call(const compilation_context& context, const declaration* declarer, const std::vector<object_const_shared_ptr>& compiled_args)
     {
-        assert(!valid_call(context, declarer, compiled_args));
+        assert(!valid_call(context, &declarer->identity, compiled_args));
 
         if (compiled_args.size() != declarer->identity.inputs.size())
         {

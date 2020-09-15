@@ -59,7 +59,7 @@ object_const_shared_ptr function_instance::call(
             declarer->name.value, compiled_args.size(), declarer->identity.inputs.size());
 
     //todo: check this works and is a useful error message (stolen from struct declaration call)
-    if (!is_variadic && !valid_call(context, declarer, compiled_args))
+    if (!is_variadic && !valid_call(context, &declarer->identity, compiled_args))
         return build_error_for_invalid_call(context, declarer, compiled_args);
 
     if (context.calls.is_recursive(declarer))

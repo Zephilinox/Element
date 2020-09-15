@@ -21,11 +21,11 @@ object_const_shared_ptr intrinsic_binary::compile(const compilation_context& con
                                                   const source_information& source_info) const
 {
     const auto& frame = context.calls.frames.back();
-    const auto& declarer = *frame.function;
-    assert(declarer.identity.inputs.size() == 2);
+    const auto& identity = *frame.identity;
+    assert(identity.inputs.size() == 2);
     assert(frame.compiled_arguments.size() == 2);
 
-    const auto intrinsic = get_intrinsic(context.interpreter, declarer);
+    const auto intrinsic = get_intrinsic(context.interpreter, identity);
     assert(intrinsic);
     assert(intrinsic == this);
 

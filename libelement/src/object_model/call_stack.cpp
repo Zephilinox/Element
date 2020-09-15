@@ -10,9 +10,9 @@
 
 using namespace element;
 
-call_stack::frame& call_stack::push(const declaration* function, std::vector<object_const_shared_ptr> compiled_arguments)
+call_stack::frame& call_stack::push(const identity* function_identity, std::vector<object_const_shared_ptr> compiled_arguments)
 {
-    return frames.emplace_back(frame{ function, std::move(compiled_arguments) });
+    return frames.emplace_back(frame{ function_identity, std::move(compiled_arguments) });
 }
 
 void call_stack::pop()
@@ -24,8 +24,8 @@ bool call_stack::is_recursive(const declaration* declaration) const
 {
     for (auto it = frames.rbegin(); it != frames.rend(); ++it)
     {
-        if (it->function == declaration)
-            return it->function->recursive_handler(*this, declaration, it);
+        if (it->identity == &declaration->identity)
+            return !declaration->is_intrinsic();
     }
 
     return false;
@@ -40,28 +40,28 @@ std::shared_ptr<error> call_stack::build_recursive_error(
 
     for (auto it = context.calls.frames.rbegin(); it < context.calls.frames.rend(); ++it)
     {
-        auto& identity = it->function;
+        auto& identity = it->identity;
 
         std::string params;
-        for (unsigned i = 0; i < identity->identity.inputs.size(); ++i)
+        for (unsigned i = 0; i < identity->inputs.size(); ++i)
         {
-            const auto& input = identity->identity.inputs[i];
+            const auto& input = identity->inputs[i];
             params += fmt::format("{}{} = {}",
                 input.get_name(),
                 input.has_annotation() ? ":" + input.get_annotation()->to_string() : "",
                 it->compiled_arguments[i]->typeof_info());
 
-            if (i != identity->identity.inputs.size() - 1)
+            if (i != identity->inputs.size() - 1)
                 params += ", ";
         }
 
         trace += fmt::format("{}:{} at {}({})",
-            identity->identity.source_info.filename,
-            identity->identity.source_info.line,
-            identity->typeof_info(),
+            identity->source_info.filename,
+            identity->source_info.line,
+            decl->typeof_info(),
             params);
 
-        if (identity == decl)
+        if (identity == &decl->identity)
             trace += " <-- here";
 
         if (it != context.calls.frames.rend() - 1)

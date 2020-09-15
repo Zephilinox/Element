@@ -12,6 +12,7 @@ namespace element
 
     class error;
     class compilation_context;
+    struct identity;
 
     class scope;
     class type_annotation;

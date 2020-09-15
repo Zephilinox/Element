@@ -142,8 +142,8 @@ object_const_shared_ptr intrinsic_for::compile(const compilation_context& contex
                                                const source_information& source_info) const
 {
     const auto& frame = context.calls.frames.back();
-    const auto& declarer = *frame.function;
-    assert(declarer.identity.inputs.size() == 3);
+    const auto& identity = *frame.identity;
+    assert(identity.inputs.size() == 3);
     assert(frame.compiled_arguments.size() == 3);
 
     const auto initial = frame.compiled_arguments[0];

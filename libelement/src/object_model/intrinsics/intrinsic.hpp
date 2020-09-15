@@ -22,9 +22,9 @@ namespace element
         template <typename T>
         static bool register_intrinsic(const element_interpreter_ctx* context, const element_ast* ast, const declaration& declaration);
 
-        static const intrinsic* get_intrinsic(const element_interpreter_ctx* context, const declaration& declaration)
+        static const intrinsic* get_intrinsic(const element_interpreter_ctx* context, const element::identity& identity)
         {
-            const auto it = context->intrinsic_map.find(&declaration);
+            const auto it = context->intrinsic_map.find(&identity);
             if (it != context->intrinsic_map.end())
                 return it->second.get();
 
@@ -81,7 +81,7 @@ namespace element
         }
 
         using value_type = element_interpreter_ctx::intrinsic_map_type::value_type;
-        context->intrinsic_map.insert(value_type{ &declaration, std::move(intrinsic) });
+        context->intrinsic_map.insert(value_type{ &declaration.identity, std::move(intrinsic) });
         return true;
     }
 

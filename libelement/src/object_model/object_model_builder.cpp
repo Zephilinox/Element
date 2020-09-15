@@ -227,7 +227,7 @@ namespace element
         auto* const decl = ast->children[ast_idx::function::declaration].get();
         auto* const body = ast->children[ast_idx::function::body].get();
 
-        auto intrinsic = decl->has_flag(ELEMENT_AST_FLAG_DECL_INTRINSIC);
+        const auto intrinsic = decl->has_flag(ELEMENT_AST_FLAG_DECL_INTRINSIC);
 
         auto function_decl = std::make_unique<function_declaration>(identifier(decl->identifier), parent_scope, get_function_kind(body, intrinsic));
         assign_source_information(context, function_decl->identity, decl);
@@ -297,7 +297,7 @@ namespace element
         else if (intrinsic && body->type == ELEMENT_AST_NODE_NO_BODY)
         {
             if (intrinsic::register_intrinsic<function_declaration>(context, ast, *function_decl))
-                function_decl->body = intrinsic::get_intrinsic(context, *function_decl);
+                function_decl->body = intrinsic::get_intrinsic(context, function_decl->identity);
         }
         else
         {

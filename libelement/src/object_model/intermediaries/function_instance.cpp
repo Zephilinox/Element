@@ -65,7 +65,7 @@ object_const_shared_ptr function_instance::call(
     if (context.calls.is_recursive(declarer))
         return context.calls.build_recursive_error(declarer, context, source_info);
 
-    context.calls.push(declarer, compiled_args);
+    context.calls.push(&declarer->identity, compiled_args);
     captures.push(declarer->our_scope.get(), &declarer->get_inputs(), compiled_args);
 
     std::swap(captures, context.captures);

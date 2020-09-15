@@ -19,11 +19,12 @@ object_const_shared_ptr intrinsic_list::compile(const compilation_context& conte
     const auto& frame = context.calls.frames.back();
     const int count = frame.compiled_arguments.size();
 
-    assert(count != 0); //todo
+    //todo: return errors instead of asserts
+    assert(count != 0);
 
-    const auto* list_decl = context.get_global_scope()->find(identifier{ "List" }, false);
-    assert(list_decl);
-    const auto* list_constructor = intrinsic::get_intrinsic(context.interpreter, *list_decl);
+    const auto* list_declaration = context.get_global_scope()->find(identifier{ "List" }, false);
+    assert(list_declaration);
+    const auto* list_constructor = intrinsic::get_intrinsic(context.interpreter, list_declaration->identity);
 
     const auto* list_indexer_decl = context.get_compiler_scope()->find(identifier{ "@list_indexer" }, false);
     assert(list_indexer_decl);

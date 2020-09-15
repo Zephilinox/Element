@@ -43,7 +43,7 @@ struct element_interpreter_ctx
         void operator()(const element::intrinsic* i);
     };
 
-    using intrinsic_map_type = std::unordered_map<const element::declaration*, std::unique_ptr<const element::intrinsic, Deleter>>;
+    using intrinsic_map_type = std::unordered_map<const element::identity*, std::unique_ptr<const element::intrinsic, Deleter>>;
     mutable intrinsic_map_type intrinsic_map;
 
     element_interpreter_ctx();

@@ -35,10 +35,6 @@ namespace element
         [[nodiscard]] virtual object_const_shared_ptr generate_placeholder(const compilation_context& context, int& placeholder_index) const { return nullptr; };
 
         [[nodiscard]] virtual std::string location() const;
-        [[nodiscard]] virtual bool recursive_handler(const call_stack& stack, const declaration* other_declaration, std::vector<call_stack::frame>::const_reverse_iterator iterator) const
-        {
-            return !is_intrinsic();
-        }
 
         std::string qualifier;
         const identifier name;

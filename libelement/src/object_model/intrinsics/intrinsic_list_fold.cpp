@@ -78,8 +78,8 @@ object_const_shared_ptr intrinsic_list_fold::compile(const compilation_context& 
     const source_information& source_info) const
 {
     const auto& frame = context.calls.frames.back();
-    const auto& declarer = *frame.function;
-    assert(declarer.identity.inputs.size() == 3);
+    const auto& identity = *frame.identity;
+    assert(identity.inputs.size() == 3);
 
     assert(frame.compiled_arguments.size() == 3);
 

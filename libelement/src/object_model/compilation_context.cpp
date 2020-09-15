@@ -18,7 +18,7 @@ compilation_context::compilation_context(const scope* const scope, element_inter
     list_indexer->identity.inputs.push_back(std::move(input_port));
     bool success = intrinsic::register_intrinsic<function_declaration>(interpreter, nullptr, *list_indexer);
     assert(success);
-    const auto* body = intrinsic::get_intrinsic(interpreter, *list_indexer);
+    const auto* body = intrinsic::get_intrinsic(interpreter, list_indexer->identity);
     assert(body);
     list_indexer->body = body;
     success = compiler_scope->add_declaration(std::move(list_indexer));

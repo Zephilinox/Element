@@ -40,7 +40,7 @@ object_const_shared_ptr struct_declaration::call(
     //this function handles construction of an intrinsic struct instance (get_intrinsic(...)->call(...)) or a user struct instance (make_shared<struct_instance>(...))
     if (is_intrinsic()) 
     {
-        const auto* intrinsic = intrinsic::get_intrinsic(context.interpreter, *this);
+        const auto* intrinsic = intrinsic::get_intrinsic(context.interpreter, this->identity);
         if (intrinsic) 
             return intrinsic->call(context, compiled_args, source_info);
 
@@ -58,7 +58,7 @@ bool struct_declaration::matches_constraint(const compilation_context& context, 
 {
     if (is_intrinsic())
     {
-        const auto intrinsic = intrinsic::get_intrinsic(context.interpreter, *this);
+        const auto intrinsic = intrinsic::get_intrinsic(context.interpreter, this->identity);
         if (!intrinsic)
             return type->matches_constraint(context, constraint);
 
@@ -93,7 +93,7 @@ bool struct_declaration::deserializable(const compilation_context& context) cons
     if (identity.inputs.empty())
     {
         assert(is_intrinsic());
-        const auto* intrinsic = intrinsic::get_intrinsic(context.interpreter, *this);
+        const auto* intrinsic = intrinsic::get_intrinsic(context.interpreter, this->identity);
         assert(intrinsic);
         //todo: ask intrinsic if it's deserializable
         if (intrinsic->get_type() == type::num.get() || intrinsic->get_type() == type::boolean.get())
@@ -119,7 +119,7 @@ object_const_shared_ptr struct_declaration::generate_placeholder(const compilati
     if (identity.inputs.empty())
     {
         assert(is_intrinsic());
-        const auto* intrinsic = intrinsic::get_intrinsic(context.interpreter, *this);
+        const auto* intrinsic = intrinsic::get_intrinsic(context.interpreter, this->identity);
         //note: generate_placeholder is called before context.boundaries has the new boundary pushed back, so we use the current size as the future index, when usually it would be size - 1
         //todo: ideally we would modify it so that we already have the boundary at this point
         auto expr = std::make_shared<element_expression_input>(context.boundaries.size(), placeholder_index);

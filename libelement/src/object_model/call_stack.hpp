@@ -8,17 +8,19 @@
 
 namespace element
 {
+    struct identity;
+
     class call_stack
     {
     public:
         struct frame
         {
             //TODO: attempt to remove this later
-            const declaration* function;
+            const identity* identity;
             std::vector<object_const_shared_ptr> compiled_arguments;
         };
 
-        frame& push(const declaration* function, std::vector<object_const_shared_ptr> compiled_arguments);
+        frame& push(const identity* function_identity, std::vector<object_const_shared_ptr> compiled_arguments);
         void pop();
 
         [[nodiscard]] bool is_recursive(const declaration* declaration) const;

@@ -12,6 +12,7 @@ namespace element
         DECLARE_TYPE_ID();
 
         static const type_const_unique_ptr num;      // the absolute unit
+        static const type_const_unique_ptr boolean; 
 
         [[nodiscard]] identifier get_identifier() const { return name; }
 

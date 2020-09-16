@@ -37,11 +37,11 @@ namespace element
     class expression_bodied_function_declaration;
     class namespace_declaration;
 
-    class constraint;
+    struct constraint;
     using constraint_const_ptr = const constraint*;
     using constraint_const_unique_ptr = std::unique_ptr<const constraint>;
 
-    class type;
+    struct type;
     using type_const_ptr = const type*;
     using type_const_unique_ptr = std::unique_ptr<const type>;
     class user_type;

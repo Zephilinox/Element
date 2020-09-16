@@ -68,14 +68,14 @@ namespace element
         for (const auto& [name, field] : fields)
         {
             const auto* field_type = field->get_constraint();
-            const auto* field_type_declarer = field_type->declarer;
+            const auto* field_type_identity = field_type->identity;
 
             const auto field_as_expression = std::dynamic_pointer_cast<const element_expression>(field);
 
             if (field_as_expression)
             {
                 //if there's no declarer then we're probably dealing with a Num or Bool (IIRC)
-                assert(!field_type_declarer);
+                assert(!field_type_identity);
                 auto element = std::invoke(callable, name, field_as_expression, index);
                 const auto res = clone->fields.try_emplace(name, std::move(element));
                 assert(res.second);

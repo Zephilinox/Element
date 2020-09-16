@@ -23,11 +23,6 @@
 using namespace element;
 
 //to_string
-std::string constraint::typeof_info() const
-{
-    return declarer->location() + ":Constraint";
-}
-
 std::string struct_declaration::typeof_info() const
 {
     return is_intrinsic() ? "IntrinsicStruct" : "CustomStruct";
@@ -105,11 +100,6 @@ std::string port::typeof_info() const
 }
 
 //to_code
-std::string constraint::to_code(int depth) const
-{
-    return "?";
-}
-
 std::string struct_declaration::to_code(const int depth) const
 {
     std::string ports;

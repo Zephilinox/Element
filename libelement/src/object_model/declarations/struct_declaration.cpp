@@ -14,7 +14,7 @@ using namespace element;
 
 struct_declaration::struct_declaration(identifier name, const scope* parent_scope, const kind struct_kind)
     : declaration(name, parent_scope)
-    , type(std::make_unique<user_type>(std::move(name), this))
+    , type(std::make_unique<user_type>(std::move(name), &this->identity))
     , struct_kind(struct_kind)
 {
     qualifier = struct_qualifier;

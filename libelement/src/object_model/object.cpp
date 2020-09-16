@@ -111,12 +111,12 @@ namespace element
                                        const identifier& name,
                                        const source_information& source_info)
     {
-        const auto func = dynamic_cast<const function_declaration*>(type->our_scope->find(name, false));
+        const auto* const func = dynamic_cast<const function_declaration*>(type->our_scope->find(name, false));
 
         //todo: not exactly working type checking, good enough for now though
-        const bool has_inputs = func && func->has_inputs();
-        const bool has_type = has_inputs && func->identity.inputs[0].get_annotation();
-        const bool types_match = has_type && func->identity.inputs[0].get_annotation()->to_string() == type->name.value;
+        const auto has_inputs = func && func->has_inputs();
+        const auto has_type = has_inputs && func->identity.inputs[0].get_annotation();
+        const auto types_match = has_type && func->identity.inputs[0].get_annotation()->to_string() == type->name.value;
 
         //call as instance function, filling in first argument
         if (types_match)

@@ -41,28 +41,28 @@ bool user_function_constraint::matches_constraint(const compilation_context& con
         return true;
 
     //todo: if there is no declarer it's num or bool (types), which can't match a function constraint
-    const auto* other = constraint_->declarer;
-    if (!other)
+    auto their_identity = constraint_->identity;
+    if (!their_identity)
         return false;
 
-    for (unsigned i = 0; i < declarer->identity.inputs.size(); ++i)
+    for (unsigned i = 0; i < identity->inputs.size(); ++i)
     {
-        const auto& our_input = declarer->identity.inputs[i];
-        const auto& their_input = other->identity.inputs[i];
+        const auto& our_input = identity->inputs[i];
+        const auto& their_input = their_identity->inputs[i];
 
         if (!check_match(our_input, their_input))
             return false;
     }
 
     //no one has a return constraint
-    if (!declarer->identity.output && !other->identity.output)
+    if (!identity->output && !their_identity->output)
         return true;
 
     //check return types match since at least one of them has one
-    if (declarer->identity.output && other->identity.output)
+    if (identity->output && their_identity->output)
     {
         //todo: nullptr checks?
-        if (!check_match(declarer->identity.output.value(), other->identity.output.value()))
+        if (!check_match(identity->output.value(), their_identity->output.value()))
             return false;
     }
 

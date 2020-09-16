@@ -25,6 +25,12 @@ const constraint_const_unique_ptr constraint::any = std::make_unique<any_constra
 const type_const_unique_ptr type::num = std::make_unique<num_type>();
 const type_const_unique_ptr type::boolean = std::make_unique<bool_type>();
 
+constraint::constraint(element_type_id id, const element::identity* declarer_identity)
+    : rtti_type(id)
+    , identity(declarer_identity)
+{
+}
+
 bool constraint::matches_constraint(const compilation_context& context, const constraint* constraint) const
 {
     if (!constraint || constraint == any.get())

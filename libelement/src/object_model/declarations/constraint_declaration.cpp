@@ -7,7 +7,7 @@ using namespace element;
 
 constraint_declaration::constraint_declaration(identifier name, const scope* parent_scope, const kind constraint_kind)
     : declaration(std::move(name), parent_scope)
-    , constraint_(std::make_unique<constraint>(4, this)) //todo: what to use
+    , constraint_(std::make_unique<constraint>(4, &this->identity)) //todo: what to use
     , constraint_kind(constraint_kind)
 {
     qualifier = constraint_qualifier;

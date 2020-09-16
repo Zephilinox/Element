@@ -73,6 +73,7 @@ set(libelement_sources
     "src/object_model/constraints/num_type.cpp"
     "src/object_model/constraints/num_type.hpp"
     "src/object_model/constraints/type.hpp"
+    "src/object_model/constraints/type.cpp"
     "src/object_model/constraints/user_function_constraint.cpp"
     "src/object_model/constraints/user_function_constraint.hpp"
     "src/object_model/constraints/user_type.hpp"

@@ -9,14 +9,12 @@ namespace element
     {
     public:
         DECLARE_TYPE_ID();
-        user_type(identifier name, const declaration* declarer)
-            : type(type_id, name, declarer)
-            , declarer(declarer)
+        user_type(identifier name, const element::identity* declarer_identity)
+            : type(type_id, name, declarer_identity)
             , name(std::move(name))
         {}
 
     private:
-        const declaration* declarer;
         identifier name;
     };
 }

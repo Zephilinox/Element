@@ -49,6 +49,11 @@ namespace Element
 		public override Result<IValue> Deserialize(Func<Instruction> nextValue, Context context)
 		{
 			var result = nextValue();
+			if (StructImplementation is BoolStruct && result.StructImplementation is NumStruct)
+            {
+				return new Result<IValue>(result);
+            }
+
 			return result.StructImplementation == StructImplementation
 				       ? new Result<IValue>(result)
 				       : context.Trace(EleMessageCode.SerializationError, $"'{result}' deserialized to incorrect type: is '{result.StructImplementation}' - expected '{StructImplementation}'");

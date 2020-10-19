@@ -32,7 +32,15 @@ namespace Element.AST
         public Result<IValue> Lookup(Identifier id, Context context) => (_associatedBlock ?? _parent).Lookup(id, context);
         public override IReadOnlyList<Identifier> Members => _associatedBlock?.Members ?? Array.Empty<Identifier>();
         public abstract override Result<IValue> DefaultValue(Context context);
-        public Result<bool> IsInstanceOfStruct(IValue value) => value.IsType<StructInstance>(out var instance) && instance.DeclaringStruct == this;
+        public Result<bool> IsInstanceOfStruct(IValue value)
+        {
+            var result = value.IsType<StructInstance>(out var instance) && instance.DeclaringStruct == this;
+            if (result)
+                return result;
+
+            throw new Exception();
+        }
+
         public Result<IValue> ResolveInstanceFunction(IValue instance, Identifier id, Context context) =>
             Index(id, context)
                 .Bind(v => v switch
